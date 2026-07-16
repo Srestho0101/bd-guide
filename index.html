@@ -161,7 +161,6 @@
     </div>
 
     <script>
-        // The API Endpoint you provided
         const API_URL = 'https://bd-development-guide-ai.onrender.com/api/chat';
 
         const chatBox = document.getElementById('chat-box');
@@ -175,21 +174,42 @@
             }
         }
 
-        function appendMessage(sender, text, sources = []) {
+        // A helper function to create the delay between characters
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // The typing effect function
+        async function typeText(element, text, speed = 15) {
+            element.textContent = ''; // Clear initial content
+            for (let i = 0; i < text.length; i++) {
+                element.textContent += text.charAt(i);
+                chatBox.scrollTop = chatBox.scrollHeight; // Keep scrolled to bottom
+                await delay(speed); // Wait a few milliseconds before the next character
+            }
+        }
+
+        async function appendMessage(sender, text, sources = []) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('message');
             
             if (sender === 'user') {
                 msgDiv.classList.add('user-message');
                 msgDiv.textContent = text;
+                chatBox.insertBefore(msgDiv, loadingIndicator);
+                chatBox.scrollTop = chatBox.scrollHeight;
             } else {
                 msgDiv.classList.add('ai-message');
-                msgDiv.textContent = text;
+                chatBox.insertBefore(msgDiv, loadingIndicator);
                 
-                // If sources exist, append them below the AI's answer
+                // 1. Type out the main answer text first
+                await typeText(msgDiv, text, 15); // 15ms per character
+                
+                // 2. Once typing is done, fade in the sources if they exist
                 if (sources && sources.length > 0) {
                     const sourcesDiv = document.createElement('div');
                     sourcesDiv.classList.add('sources');
+                    // Start hidden for a smooth fade-in
+                    sourcesDiv.style.opacity = '0'; 
+                    sourcesDiv.style.transition = 'opacity 0.5s ease-in-out';
                     sourcesDiv.innerHTML = '<strong>Sources:</strong>';
                     
                     sources.forEach(src => {
@@ -200,24 +220,24 @@
                     });
                     
                     msgDiv.appendChild(sourcesDiv);
+                    
+                    // Trigger the fade-in effect
+                    setTimeout(() => {
+                        sourcesDiv.style.opacity = '1';
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }, 100);
                 }
             }
-
-            // Insert the message right before the loading indicator
-            chatBox.insertBefore(msgDiv, loadingIndicator);
-            
-            // Scroll to the bottom
-            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         async function sendMessage() {
             const query = userInput.value.trim();
             if (!query) return;
 
-            // 1. Display user message
+            // Display user message instantly
             appendMessage('user', query);
             
-            // 2. Clear input and disable UI
+            // Disable UI while waiting for server
             userInput.value = '';
             userInput.disabled = true;
             sendBtn.disabled = true;
@@ -225,7 +245,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // 3. Call the FastAPI backend
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
@@ -243,15 +262,18 @@
 
                 const data = await response.json();
                 
-                // 4. Display AI response and sources
-                appendMessage('ai', data.answer, data.sources);
+                // Hide loading indicator *before* the typing starts
+                loadingIndicator.style.display = 'none';
+                
+                // Trigger the animated AI response (using await to wait for it to finish typing)
+                await appendMessage('ai', data.answer, data.sources);
 
             } catch (error) {
                 console.error('API Error:', error);
+                loadingIndicator.style.display = 'none';
                 appendMessage('ai', 'Sorry, I encountered an error connecting to the server. Please check the console log.');
             } finally {
-                // 5. Re-enable UI
-                loadingIndicator.style.display = 'none';
+                // Re-enable UI after everything is done typing
                 userInput.disabled = false;
                 sendBtn.disabled = false;
                 userInput.focus();
