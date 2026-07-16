@@ -114,7 +114,7 @@ def health_check():
     """Simple endpoint for Render to monitor service health."""
     return {"status": "healthy", "database": "connected"}
 
-@app.post("/api/query", response_model=QueryResponse)
+@app.post("/api/chat", response_model=QueryResponse)
 def run_rag_pipeline(request: QueryRequest):
     """Main RAG endpoint to submit a query and get a synthesized answer with sources."""
     try:
