@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upazila AI Chat</title>
+    <style>
+        :root {
+            --primary-bg: #f3f4f6;
+            --chat-bg: #ffffff;
+            --user-msg: #2563eb;
+            --ai-msg: #f1f5f9;
+            --text-main: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            background: var(--chat-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #chat-header {
+            background: var(--user-msg);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: var(--user-msg);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .ai-message {
+            background: var(--ai-msg);
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid var(--border);
+        }
+
+        .sources {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+        }
+
+        .source-item {
+            margin-bottom: 4px;
+        }
+
+        .loading {
+            align-self: flex-start;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-style: italic;
+            display: none;
+        }
+
+        #input-container {
+            display: flex;
+            padding: 16px;
+            background: var(--chat-bg);
+            border-top: 1px solid var(--border);
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        #user-input:focus {
+            border-color: var(--user-msg);
+        }
+
+        #send-btn {
+            background: var(--user-msg);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            margin-left: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        #send-btn:hover {
+            background: #1d4ed8;
+        }
+
+        #send-btn:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chat-container">
+        <div id="chat-header">Upazila Knowledge AI</div>
+        
+        <div id="chat-box">
+            <div class="message ai-message">
+                Hello! I am ready to answer your questions about Bangladesh Upazilas. What would you like to know?
+            </div>
+            <div id="loading-indicator" class="loading">AI is typing...</div>
+        </div>
+
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Ask about an upazila (e.g., Dhamrai)..." autocomplete="off" onkeypress="handleKeyPress(event)">
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // The API Endpoint you provided
+        const API_URL = 'https://bd-development-guide-ai.onrender.com/api/chat';
+
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function appendMessage(sender, text, sources = []) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            
+            if (sender === 'user') {
+                msgDiv.classList.add('user-message');
+                msgDiv.textContent = text;
+            } else {
+                msgDiv.classList.add('ai-message');
+                msgDiv.textContent = text;
+                
+                // If sources exist, append them below the AI's answer
+                if (sources && sources.length > 0) {
+                    const sourcesDiv = document.createElement('div');
+                    sourcesDiv.classList.add('sources');
+                    sourcesDiv.innerHTML = '<strong>Sources:</strong>';
+                    
+                    sources.forEach(src => {
+                        const srcItem = document.createElement('div');
+                        srcItem.classList.add('source-item');
+                        srcItem.textContent = `- ${src.title} (ID: ${src.wp_id})`;
+                        sourcesDiv.appendChild(srcItem);
+                    });
+                    
+                    msgDiv.appendChild(sourcesDiv);
+                }
+            }
+
+            // Insert the message right before the loading indicator
+            chatBox.insertBefore(msgDiv, loadingIndicator);
+            
+            // Scroll to the bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const query = userInput.value.trim();
+            if (!query) return;
+
+            // 1. Display user message
+            appendMessage('user', query);
+            
+            // 2. Clear input and disable UI
+            userInput.value = '';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            loadingIndicator.style.display = 'block';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                // 3. Call the FastAPI backend
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        top_k: 3
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // 4. Display AI response and sources
+                appendMessage('ai', data.answer, data.sources);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                appendMessage('ai', 'Sorry, I encountered an error connecting to the server. Please check the console log.');
+            } finally {
+                // 5. Re-enable UI
+                loadingIndicator.style.display = 'none';
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+    </script>
+</body>
+</html>
