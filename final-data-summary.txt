@@ -1,0 +1,27 @@
+=====================================================
+      FINAL RAG-READY UPAZILA DATABASE SUMMARY       
+=====================================================
+Date Generated: Thu Jul 16 05:26:56 UTC 2026
+
+--- TOTAL INFORMATIVE RECORDS ---
+40 highly informative upazilas ready for RAG.
+
+--- CONTENT VOLUME METRICS ---
+longest_record_chars  shortest_record_chars  average_chars_per_upazila
+--------------------  ---------------------  -------------------------
+               30194                   2176                      12172
+
+--- FIELD COMPLETENESS (Entries with significant text) ---
+Development Info populated: 40
+Travel Info populated: 40
+Geographic Info populated: 40
+History Info populated: 38
+
+--- TOP 5 MOST INFORMATIVE UPAZILAS ---
+wp_id        title        total_chars
+-----  -----------------  -----------
+  679  হবিগঞ্জ সদর               30194
+  661  সিলেট বিয়ানীবাজার        23863
+  668  সিলেট কানাইঘাট           23666
+  669  সিলেট জকিগঞ্জ             22674
+  664  সিলেট ফেঞ্চুগঞ্জ            20179

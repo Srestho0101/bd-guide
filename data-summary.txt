@@ -1,0 +1,39 @@
+========================================
+       UPAZILA DATABASE SUMMARY         
+========================================
+Date Generated: Thu Jul 16 03:12:08 UTC 2026
+
+--- TOTAL RECORDS ---
+1152 total entries
+
+--- DATA QUALITY ---
+4 records with missing titles (Unknown Title)
+
+--- CONTENT COMPLETENESS ---
+Entries with custom Development Info:
+0
+Entries with filled Travel Info:
+1
+Entries with filled Geographic Info:
+0
+Entries with filled History Info:
+0
+
+--- SAMPLE DATA (FIRST 15 CLEAN RECORDS) ---
+wp_id              title
+-----  -----------------------------
+    2  HomePage
+    3  Privacy Policy
+    4  Navigation
+    5  Mulberry
+    6  ext-custom-logo-1776875626297
+    8  Header Navigation
+    9  Header
+   10  Footer
+   11  Page with Title
+   15  Home
+   16  About
+   17  Contact
+   18  বাংলাদেশের রূপান্তর
+   19  Portfolio
+   20  Resources

@@ -1,0 +1,26 @@
+========================================
+    FIXED UPAZILA DATABASE SUMMARY      
+========================================
+Date Generated: Thu Jul 16 04:30:13 UTC 2026
+
+--- TOTAL RECORDS ---
+495 total clean entries
+
+--- DATA QUALITY ---
+0 records with missing titles (Unknown Title)
+
+--- CONTENT COMPLETENESS ---
+Entries with custom Development Info:
+0
+Entries with filled Travel Info:
+1
+Entries with filled Geographic Info:
+0
+Entries with filled History Info:
+0
+
+--- DATA DISTRIBUTION (BY TOTAL CHARACTERS) ---
+total_chars  upazila_count
+-----------  -------------
+       8783              1
+         61            494
