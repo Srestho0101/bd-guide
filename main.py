@@ -18,7 +18,7 @@ from mistralai.client import Mistral
 CHROMA_DB_PATH = "chroma_data"
 MISTRAL_API_KEY = os.environ.get("MISTRAL_API_KEY")
 EMBED_MODEL = "mistral-embed"
-CHAT_MODEL = "mistral-small-latest"
+CHAT_MODEL = "mistral-large-latest"
 
 if not MISTRAL_API_KEY:
     print("Error: MISTRAL_API_KEY environment variable not set.")
