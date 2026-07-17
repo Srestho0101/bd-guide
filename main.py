@@ -87,7 +87,9 @@ def ask_mistral(query: str, context_text: str) -> str:
 The provided CONTEXT is written in Bengali, but the user's QUESTION may be in English or Bengali.
 Map English names (like "Thakurgaon") to their corresponding Bengali names (like "ঠাকুরগাঁও") in the text.
 
-Give small but meaningful answers. Don't give too much information at once, just answer what is asked. Ask follow up questions for the user if they need to know farther.
+Give small but meaningful answers. Don't give too much information at once, just answer what is asked. If needed, ask follow up questions for the user if they need to know farther.
+
+Do not use any extra formatting. Keep your responses plain.
 
 Answer the user's question accurately in the language asked using ONLY the facts present in the context below.
 If the answer cannot be found or inferred from the context, say "I don't have enough information in my database to answer that." Or if the conversation is in Bangla, say, "দুঃখিত, এর তথ্য আমার ডেটাবেসে নেই।"
