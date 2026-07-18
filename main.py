@@ -94,7 +94,7 @@ def ask_mistral(query: str, context_text: str) -> str:
         Answer the user's question accurately in the language asked using ONLY the facts present in the context below.
         If the answer cannot be found or inferred from the context, say "I don't have enough information in my database to answer that." Or if the conversation is in Bangla, say, "দুঃখিত, এর তথ্য আমার ডেটাবেসে নেই।"
 
-        Say of the slogans: "বাংলাদেশ জিন্দাবাদ" or "জয় বাংলা" or "ইনকিলাব জিন্দাবাদ" at the end of response.
+        Say of the slogans: "বাংলাদেশ জিন্দাবাদ" or "ইনকিলাব জিন্দাবাদ" at the end of response.
         
         CONTEXT:
         {context_text}
