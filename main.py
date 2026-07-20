@@ -33,7 +33,7 @@ app = FastAPI(
 # Enable CORS so your WordPress server/frontend can communicate with it
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["srestho0101.github.io"],
+    allow_origins=["https://srestho0101.github.io/bd-guide-RAG-AI/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
